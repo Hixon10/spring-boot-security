@@ -40,7 +40,7 @@ import ru.hixon.microservice.tables.records.UsersRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Users extends TableImpl<UsersRecord> {
 
-    private static final long serialVersionUID = 713428003;
+    private static final long serialVersionUID = -880230892;
 
     /**
      * The reference instance of <code>public.users</code>
@@ -56,14 +56,24 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     /**
-     * The column <code>public.users.user_id</code>.
+     * The column <code>public.users.id</code>.
      */
-    public final TableField<UsersRecord, String> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.VARCHAR(36).nullable(false), this, "");
+    public final TableField<UsersRecord, String> ID = createField("id", org.jooq.impl.SQLDataType.VARCHAR(36).nullable(false), this, "");
 
     /**
      * The column <code>public.users.role</code>.
      */
     public final TableField<UsersRecord, String> ROLE = createField("role", org.jooq.impl.SQLDataType.VARCHAR(36).nullable(false), this, "");
+
+    /**
+     * The column <code>public.users.username</code>.
+     */
+    public final TableField<UsersRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR(70).nullable(false), this, "");
+
+    /**
+     * The column <code>public.users.password</code>.
+     */
+    public final TableField<UsersRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR(70).nullable(false), this, "");
 
     /**
      * Create a <code>public.users</code> table reference

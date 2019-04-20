@@ -22,38 +22,56 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Users implements Serializable {
 
-    private static final long serialVersionUID = 1830698625;
+    private static final long serialVersionUID = 1098411285;
 
-    private final String userId;
+    private final String id;
     private final String role;
+    private final String username;
+    private final String password;
 
     public Users(Users value) {
-        this.userId = value.userId;
+        this.id = value.id;
         this.role = value.role;
+        this.username = value.username;
+        this.password = value.password;
     }
 
     public Users(
-        String userId,
-        String role
+        String id,
+        String role,
+        String username,
+        String password
     ) {
-        this.userId = userId;
+        this.id = id;
         this.role = role;
+        this.username = username;
+        this.password = password;
     }
 
-    public String getUserId() {
-        return this.userId;
+    public String getId() {
+        return this.id;
     }
 
     public String getRole() {
         return this.role;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Users (");
 
-        sb.append(userId);
+        sb.append(id);
         sb.append(", ").append(role);
+        sb.append(", ").append(username);
+        sb.append(", ").append(password);
 
         sb.append(")");
         return sb.toString();
