@@ -1,0 +1,113 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
+    id 'java'
+    id 'idea'
+    id 'nu.studer.jooq' version '3.0.3'
+    id "org.flywaydb.flyway" version "5.2.4"
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'ru.hixon.microservice'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+def databaseLogin = 'postgres'
+def databasePassword = 'password'
+def databaseUrl = 'jdbc:postgresql://localhost:5432/microservice'
+def generatedDir = 'src/generated/jooq'
+
+flyway {
+    url = databaseUrl
+    user = databaseLogin
+    password = databasePassword
+}
+
+jooq {
+    microservice(sourceSets.main) {
+        jdbc {
+            driver = 'org.postgresql.Driver'
+            url = databaseUrl
+            user = databaseLogin
+            password = databasePassword
+        }
+        generator {
+            name = 'org.jooq.codegen.DefaultGenerator'
+            strategy {
+                name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+            }
+            database {
+                name = 'org.jooq.meta.postgres.PostgresDatabase'
+                inputSchema = 'public'
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                immutablePojos = true
+                fluentSetters = true
+            }
+            target {
+                packageName = 'ru.hixon.microservice'
+                directory = generatedDir
+            }
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(test) || graph.hasTask(bootRun)) {
+        generateMicroserviceJooqSchemaSource.enabled = false
+    }
+}
+
+clean.doLast {
+    project.file(generatedDir).deleteDir()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "src/main/java"
+            srcDirs += generatedDir
+        }
+        resources {
+            srcDirs += "src/main/resources"
+        }
+    }
+
+    test {
+        java {
+            srcDirs += "src/test/java"
+        }
+        resources {
+            srcDirs += "src/test/resources"
+        }
+    }
+}
+
+//generateMicroserviceJooqSchemaSource.dependsOn(clean)
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    jooqRuntime group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+
+    implementation enforcedPlatform('io.zonky.test.postgres:embedded-postgres-binaries-bom:11.1.0')
+    // https://mvnrepository.com/artifact/io.zonky.test/embedded-database-spring-test
+    compile group: 'io.zonky.test', name: 'embedded-database-spring-test', version: '1.4.1'
+}
