@@ -65,9 +65,9 @@ gradle.taskGraph.whenReady { graph ->
     }
 }
 
-clean.doLast {
-    project.file(generatedDir).deleteDir()
-}
+//clean.doLast {
+//    project.file(generatedDir).deleteDir()
+//}
 
 sourceSets {
     main {
