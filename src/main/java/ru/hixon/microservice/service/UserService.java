@@ -13,6 +13,7 @@ import ru.hixon.microservice.repository.UserRepository;
 import ru.hixon.microservice.security.JwtTokenProvider;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -41,6 +42,7 @@ public class UserService {
     public String signup(User user) {
         if (!userRepository.existsByUsername(user.getUsername())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setId(UUID.randomUUID().toString());
             userRepository.save(user);
             return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
         } else {

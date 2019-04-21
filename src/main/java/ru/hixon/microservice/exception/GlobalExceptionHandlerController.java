@@ -1,6 +1,7 @@
 package ru.hixon.microservice.exception;
 
-import org.springframework.context.annotation.Bean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,6 +14,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandlerController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandlerController.class);
 
     /// TODO
 //    @Bean
@@ -35,11 +38,13 @@ public class GlobalExceptionHandlerController {
 
     @ExceptionHandler(AccessDeniedException.class)
     public void handleAccessDeniedException(HttpServletResponse res) throws IOException {
+        LOGGER.error("Access denied");
         res.sendError(HttpStatus.FORBIDDEN.value(), "Access denied");
     }
 
     @ExceptionHandler(Exception.class)
-    public void handleException(HttpServletResponse res) throws IOException {
+    public void handleException(HttpServletResponse res, Exception e) throws IOException {
+        LOGGER.error("Something went wrong", e);
         res.sendError(HttpStatus.BAD_REQUEST.value(), "Something went wrong");
     }
 
